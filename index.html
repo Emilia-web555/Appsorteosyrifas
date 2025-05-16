@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>🎉 Gran Rifa Solidaria 🎉</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #7B1FA2, #9C27B0);
+      color: white;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    h1 {
+      font-size: 3.5em;
+      margin-top: 30px;
+      color: #ffeb3b;
+      text-shadow: 2px 2px 5px #000;
+    }
+    #participants {
+      font-size: 1em;
+      max-height: 300px;
+      overflow-y: scroll;
+      background-color: rgba(255, 255, 255, 0.15);
+      margin: 20px auto;
+      padding: 15px;
+      width: 90%;
+      border-radius: 10px;
+      color: #ffe4f7;
+    }
+    #number-display {
+      font-size: 6em;
+      margin: 30px 0;
+      color: #ffff00;
+      text-shadow: 4px 4px 10px #000;
+      display: none;
+    }
+    .winner {
+      font-size: 2.5em;
+      margin-top: 20px;
+      color: #00e676;
+      text-shadow: 2px 2px 5px #000;
+    }
+    button {
+      font-size: 1.5em;
+      background: linear-gradient(45deg, #ff4081, #f50057);
+      color: white;
+      border: none;
+      border-radius: 25px;
+      padding: 15px 50px;
+      margin: 30px 10px;
+      cursor: pointer;
+      box-shadow: 2px 2px 10px #00000077;
+      transition: all 0.3s ease;
+    }
+    button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(45deg, #f06292, #d81b60);
+    }
+    audio {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎉 ¡Gran Rifa Solidaria! 🎉</h1>
+
+  <div id="participants">
+    <strong>🎟️ Números participantes:</strong><br>
+    <!-- Lista de participantes del 1 al 2000 -->
+    <script>
+      document.write([...Array(2000).keys()].map(n => n + 1).join(' '));
+    </script>
+  </div>
+
+  <button onclick="startSorteo()" id="startBtn">🚀 Comenzar Sorteo</button>
+
+  <div id="number-display">---</div>
+  <div class="winner" id="winnerText"></div>
+
+  <audio id="celebrationSound">
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_18a8ac0e77.mp3?filename=small-crowd-cheer-2-18562.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="kahootSound" loop>
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/28/audio_d4f01920a1.mp3?filename=game-show-theme-19485.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const winners = [370, 1897, 1101];
+    let current = 0;
+    let drawing = false;
+    let musicStarted = false;
+
+    function startSorteo() {
+      if (!musicStarted) {
+        document.getElementById("kahootSound").play();
+        musicStarted = true;
+      }
+
+      if (drawing || current >= winners.length) return;
+
+      // Ocultar la lista de participantes al iniciar
+      const participantsDiv = document.getElementById("participants");
+      if (participantsDiv) {
+        participantsDiv.style.display = "none";
+        document.getElementById("startBtn").textContent = "🎯 Iniciar Sorteo";
+      }
+
+      document.getElementById("winnerText").textContent = "";
+      document.getElementById("startBtn").disabled = true;
+      document.getElementById("number-display").style.display = "block";
+
+      let numberDisplay = document.getElementById("number-display");
+      let count = 0;
+      drawing = true;
+
+      let interval = setInterval(() => {
+        let rand = Math.floor(Math.random() * 2000) + 1;
+        numberDisplay.textContent = rand;
+        count++;
+        if (count > 50) {
+          clearInterval(interval);
+          let winner = winners[current];
+          numberDisplay.textContent = winner;
+          document.getElementById("winnerText").textContent = `🏆 Ganador: ${winner}`;
+          document.getElementById("celebrationSound").play();
+          drawing = false;
+          current++;
+          document.getElementById("startBtn").disabled = false;
+          if (current >= winners.length) {
+            document.getElementById("startBtn").textContent = "🎯 Iniciar Sorteo";
+            current = 0;
+          }
+        }
+      }, 75);
+    }
+  </script>
+</body>
+</html>
